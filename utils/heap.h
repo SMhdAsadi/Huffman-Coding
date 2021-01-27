@@ -4,9 +4,9 @@
 
 #define DEFAULT_HEAP_SIZE 10
 
-typedef enum _heap_type {MIN_HEAP, MAX_HEAP} HeapType;
+typedef enum {MIN_HEAP, MAX_HEAP} HeapType;
 
-typedef struct _heap
+typedef struct
 {
     Array *array;
     HeapType type;
@@ -17,8 +17,8 @@ typedef struct _heap
     type: MIN_HEAP, MAX_HEAP
 */
 Heap *newHeap(HeapType type);
-void insert(Heap *heap, int data);
-int deleteRoot(Heap *heap);
+void insert(Heap *heap, Node *node);
+Node *deleteRoot(Heap *heap);
 void printHeap(Heap *heap);
 void deleteHeap(Heap *heap);
 

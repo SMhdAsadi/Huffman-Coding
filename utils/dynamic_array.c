@@ -26,6 +26,24 @@ int len(Array *array)
     return array->size;
 }
 
+int swap(Array *array, int index1, int index2)
+{
+    if (index1 < 0 || index1 > len(array) - 1)
+        return 0;
+
+    if (index2 < 0 || index2 > len(array) - 1)
+        return 0;
+
+    if (index1 == index2)
+        return 1;
+
+    Node *first = get(array, index1);
+    Node *second = get(array, index2);
+    set(array, index1, second);
+    set(array, index2, first);
+    return 1;
+}
+
 Node *get(Array *array, int index)
 {
     if (index < array->size && index >= 0)

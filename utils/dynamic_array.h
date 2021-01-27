@@ -2,6 +2,7 @@
 #define DYNAMICARRAY_H
 #include "tree.h"
 
+
 /*
     a dynamic array that stores node in it
 */
@@ -12,15 +13,14 @@ typedef struct _dynamic_array
     int capacity;
 } Array;
 
-/*
-    creates a new dynamic array with initial capacity
-*/
+
+// creates a new dynamic array with initial capacity
 Array *newArray(int capacity);
 
-/*
-    returns a pointer to node from that index in dynamic array
-*/
+
+// returns a pointer to node from that index in dynamic array
 Node *get(Array *array, int index);
+
 
 /*
     puts the node in that index in the array
@@ -28,15 +28,14 @@ Node *get(Array *array, int index);
 */
 void set(Array *array, int index, Node *node);
 
-/*
-    adds node to start of the array
-*/
+
+// adds node to start of the array
 void addFirst(Array *array, Node *node);
 
-/*
-    adds the node to end of the array
-*/
+
+// adds the node to end of the arra
 void addLast(Array *array, Node *node);
+
 
 /*
     adds the node to that index of the array
@@ -45,12 +44,14 @@ void addLast(Array *array, Node *node);
 */
 void add(Array *array, int index, Node *node);
 
+
 /*
     deletes the first item of the array
     returns 0 if there was an Error
     returns 1 if deleted successfully
 */
 int deleteFirst(Array *array);
+
 
 /*
     deletes the last item of the array
@@ -59,6 +60,7 @@ int deleteFirst(Array *array);
 */
 int deleteLast(Array *array);
 
+
 /*
     deletes the item at that index of the array
     returns 0 if there was an Error
@@ -66,20 +68,23 @@ int deleteLast(Array *array);
 */
 int delete(Array *array, int index);
 
-/*
-    returns the size of the array
-*/
+
+// returns the size of the array
 int len(Array *array);
 
+
 /*
-    prints the array
+    swaps the indexes in the array
+    returns 1 if successful otherwise 0
 */
+int swap(Array *array, int index1, int index2);
+
+
+// prints the array
 void printArray(Array *array);
 
 
-/*
-    delets the entire array along with all nodes
-*/
+// delets the entire array along with all nodes
 void deleteArray(Array *array);
 
 #endif

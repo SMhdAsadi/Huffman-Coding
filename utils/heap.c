@@ -20,22 +20,26 @@ void heapify(Heap *heap, int index)
     int right = 2 * index + 2;
     
     int extremum_index = index;
-    if (left < size && (
-                        heap->type == MAX_HEAP && get(heap->array, left) > get(heap->array, extremum_index) ||
-                        heap->type == MIN_HEAP && get(heap->array, left) < get(heap->array, extremum_index)
-                        )
-    )
+    if (left < size)
     {
-        extremum_index = left;
+        if (heap->type == MAX_HEAP)
+        {
+            if (get(heap->array, left)->frequency > get(heap->array, extremum_index)->frequency)
+                extremum_index = left;
+        }
+        else if (get(heap->array, left)->frequency < get(heap->array, extremum_index)->frequency)
+            extremum_index = left;
     }
 
-    if (right < size && (
-                        heap->type == MAX_HEAP && get(heap->array, right) > get(heap->array, extremum_index) ||
-                        heap->type == MIN_HEAP && get(heap->array, right) < get(heap->array, extremum_index)
-                        )
-    )
+    if (right < size)
     {
-        extremum_index = right;
+        if (heap->type == MAX_HEAP)
+        {
+            if (get(heap->array, right)->frequency > get(heap->array, extremum_index)->frequency)
+                extremum_index = right;
+        }
+        else if (get(heap->array, right)->frequency < get(heap->array, extremum_index)->frequency)
+            extremum_index = right;
     }
 
     if (extremum_index != index)
@@ -45,9 +49,9 @@ void heapify(Heap *heap, int index)
     }
 }
 
-void insert(Heap *heap, int data)
+void insert(Heap *heap, Node *node)
 {
-    addLast(heap->array, data);
+    addLast(heap->array, node);
 
     for (int i = len(heap->array); i >= 0; i--)
     {
@@ -55,42 +59,32 @@ void insert(Heap *heap, int data)
     }
 }
 
-int deleteRoot(Heap *heap)
+Node *deleteRoot(Heap *heap)
 {
     int size = len(heap->array);
 
     if (size == 0)
-        return -1;
+        return NULL;
 
-    int data = get(heap->array, 0);
+    Node *node = get(heap->array, 0);
+    Node *copy = newNode(node->c, node->frequency);
+    copy->left = node->left;
+    copy->right = node->right;
+    
     swap(heap->array, 0, size - 1);
     deleteLast(heap->array);
 
     for (int i = size / 2 - 1; i >= 0; i--)
-    {
         heapify(heap, i);
-    }
 
-    return data;
+    return copy;
 }
 
 void printHeap(Heap *heap)
 {
     int size = len(heap->array);
-    printf("Heap [");
-    for (int i = 0; i < size - 1; i++)
-    {
-        printf("%i, ", get(heap->array, i));
-    }
-
-    if (size != 0)
-    {
-        printf("%i]\n", get(heap->array, size - 1));
-    }
-    else
-    {
-        printf("]\n");
-    }   
+    printf("Heap ");
+    printArray(heap->array);
 }
 
 void deleteHeap(Heap *heap)

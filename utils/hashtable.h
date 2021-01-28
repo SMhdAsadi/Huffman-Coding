@@ -1,6 +1,13 @@
-#include "linkedlist.h"
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+/*
+    this file implements a type of hash table which stores (character, frequency)
+    when a overlap is happened, linkedlist is used
+*/
 
-#define HASH_ARRAY_SIZE 5
+#include "linkedlist.h"
+#define HASH_ARRAY_SIZE 15
+
 
 typedef struct _hashtable
 {
@@ -8,9 +15,31 @@ typedef struct _hashtable
     int size;
 } HashTable;
 
+
+// creates and returns a new hash table
 HashTable *newHashTable();
-void addItem(HashTable *hashTable, char *key, int value);
-int deleteItem(HashTable *hashTabe, char *key);
-void print(HashTable *hashTable);
+
+
+/* 
+    adds the character to the hash table
+    if the character exists, adds one to the frequency
+*/
+void addItem(HashTable *hashTable, char character);
+
+
+// deletes the item with key = character
+int deleteItem(HashTable *hashTabe, char character);
+
+
+// prints the hash table
+void printHashTable(HashTable *hashTable);
+
+
+// deletes the whole hash table
 void deleteHashTable(HashTable *hashTable);
-int getValue(HashTable *hashTable, char *key);
+
+
+// returns the value(frequency) of the character
+int getValue(HashTable *hashTable, char character);
+
+#endif

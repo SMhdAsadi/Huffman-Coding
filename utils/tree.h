@@ -6,9 +6,9 @@ typedef struct _node
     char c;
     int frequency;
     struct _node *left, *right;
-} Node;
+} TNode;
 
-Node *newNode(char c, int frequency);
-Node *newEmptyNode();
+TNode *newNode(char c, int frequency);
+TNode *newEmptyNode();
 
 #endif

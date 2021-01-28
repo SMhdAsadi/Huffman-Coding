@@ -1,84 +1,65 @@
-/*
-    this file implements a type of hash table which stores [name: age] 
-    when a overlap is happened, linkedlist is used
-*/
-
+#include "hashtable.h"
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include "linkedlist.h"
 
-#define HASH_ARRAY_SIZE 5
 
-typedef struct _hashtable
+int hashFunction(char key)
 {
-    List *array[HASH_ARRAY_SIZE];
-    int size;
-} HashTable;
-
-
-int hashFunction(char *key)
-{
-    if (strlen(key) == 0)
-    {
-        return -1;
-    }
-
-    return *key % HASH_ARRAY_SIZE;
+    return key % HASH_ARRAY_SIZE;
 }
+
 
 HashTable *newHashTable()
 {
     HashTable *hashTable = malloc(sizeof(HashTable));
     for (int i = 0; i < HASH_ARRAY_SIZE; i++)
-    {
         hashTable->array[i] = newList();
-    }
+    
     hashTable->size = 0;
 
     return hashTable;
 }
 
-void addItem(HashTable *hashTable, char *key, int value)
+void addItem(HashTable *hashTable, char character)
 {
-    int index = hashFunction(key);
-    addNode(hashTable->array[index], key, value);
+    int index = hashFunction(character);
+    addNode(hashTable->array[index], character);
     hashTable->size++;
 }
 
-int deleteItem(HashTable *hashTabe, char *key)
+int deleteItem(HashTable *hashTabe, char character)
 {
-    int index = hashFunction(key);
-    int status = deleteNode(hashTabe->array[index], key);
-    hashTabe->size--;
+    int index = hashFunction(character);
+    int deletedSuccessfully = deleteNode(hashTabe->array[index], character);
 
-    return status;
+    if (deletedSuccessfully)
+        hashTabe->size--;
+
+    return deletedSuccessfully;
 }
 
-int getValue(HashTable *hashTable, char *key)
+int getValue(HashTable *hashTable, char character)
 {
-    int index = hashFunction(key);
+    int index = hashFunction(character);
     
     List *list = hashTable->array[index];
     if (isEmpty(list))
-    {
         return -1;
-    }
     
     Node *node = list->head;
     while (node != NULL)
     {
-        if (strcmp(node->key, key) == 0)
-        {
-            return node->value;
-        }
+        if (node->character == character)
+            return node->frequency;
+
         node = node->next;
     }
 
     return -1;
 }
 
-void print(HashTable *hashTable)
+void printHashTable(HashTable *hashTable)
 {
     printf("Hash Table:\n");
     for (int i = 0; i < HASH_ARRAY_SIZE; i++)
@@ -91,9 +72,7 @@ void print(HashTable *hashTable)
 void deleteHashTable(HashTable *hashTable)
 {
     for (int i = 0; i < HASH_ARRAY_SIZE; i++)
-    {
         deleteList(hashTable->array[i]);
-    }
 
     free(hashTable);
 }

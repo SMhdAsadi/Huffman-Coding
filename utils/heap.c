@@ -49,7 +49,7 @@ void heapify(Heap *heap, int index)
     }
 }
 
-void insert(Heap *heap, Node *node)
+void insert(Heap *heap, TNode *node)
 {
     addLast(heap->array, node);
 
@@ -59,18 +59,18 @@ void insert(Heap *heap, Node *node)
     }
 }
 
-Node *deleteRoot(Heap *heap)
+TNode *deleteRoot(Heap *heap)
 {
     int size = len(heap->array);
 
     if (size == 0)
         return NULL;
 
-    Node *node = get(heap->array, 0);
-    Node *copy = newNode(node->c, node->frequency);
+    TNode *node = get(heap->array, 0);
+    TNode *copy = newNode(node->c, node->frequency);
     copy->left = node->left;
     copy->right = node->right;
-    
+
     swap(heap->array, 0, size - 1);
     deleteLast(heap->array);
 

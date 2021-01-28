@@ -1,9 +1,9 @@
 #include "tree.h"
 #include <malloc.h>
 
-Node *newNode(char c, int frequency)
+TNode *newNode(char c, int frequency)
 {
-    Node *node = malloc(sizeof(Node));
+    TNode *node = malloc(sizeof(TNode));
     node->c = c;
     node->frequency = frequency;
     node->left = node->right = NULL;
@@ -11,9 +11,9 @@ Node *newNode(char c, int frequency)
     return node;
 }
 
-Node *newEmptyNode()
+TNode *newEmptyNode()
 {
-    Node *node = calloc(1, sizeof(Node));
+    TNode *node = calloc(1, sizeof(TNode));
     node->left = node->right = NULL;
 
     return node;

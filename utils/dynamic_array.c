@@ -37,14 +37,14 @@ int swap(Array *array, int index1, int index2)
     if (index1 == index2)
         return 1;
 
-    Node *first = get(array, index1);
-    Node *second = get(array, index2);
+    TNode *first = get(array, index1);
+    TNode *second = get(array, index2);
     set(array, index1, second);
     set(array, index2, first);
     return 1;
 }
 
-Node *get(Array *array, int index)
+TNode *get(Array *array, int index)
 {
     if (index < array->size && index >= 0)
         return array->elements[index];
@@ -52,13 +52,13 @@ Node *get(Array *array, int index)
     return NULL;
 }
 
-void set(Array *array, int index, Node *node)
+void set(Array *array, int index, TNode *node)
 {
     if (index < array->size && index >= 0)
         array->elements[index] = node;
 }
 
-void addFirst(Array *array, Node *node)
+void addFirst(Array *array, TNode *node)
 {
     if (array->size == array->capacity)
         doubleTheCapacity(array);
@@ -70,7 +70,7 @@ void addFirst(Array *array, Node *node)
     set(array, 0, node);
 }
 
-void addLast(Array *array, Node *node)
+void addLast(Array *array, TNode *node)
 {
     if (array->size == array->capacity)
         doubleTheCapacity(array);
@@ -79,7 +79,7 @@ void addLast(Array *array, Node *node)
     set(array, array->size - 1, node);
 }
 
-void add(Array *array, int index, Node *node)
+void add(Array *array, int index, TNode *node)
 {
     int size = len(array);
     if (index >= 0 && index <= size)
@@ -162,7 +162,7 @@ void printArray(Array *array)
     printf("[");
     for (int i = 0; i < size - 1; i++)
     {
-        Node *node = get(array, i);
+        TNode *node = get(array, i);
         if (node == NULL)
             printf("node is null\n");
         printf("(%c, %i), ", node->c, node->frequency);
@@ -170,7 +170,7 @@ void printArray(Array *array)
     
     if (size != 0)
     {
-        Node *node = get(array, len(array) - 1);
+        TNode *node = get(array, len(array) - 1);
         printf("(%c, %i)]\n", node->c, node->frequency);
     }
     else

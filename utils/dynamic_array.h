@@ -8,7 +8,7 @@
 */
 typedef struct _dynamic_array
 {
-    Node **elements;
+    TNode **elements;
     int size;
     int capacity;
 } Array;
@@ -19,22 +19,22 @@ Array *newArray(int capacity);
 
 
 // returns a pointer to node from that index in dynamic array
-Node *get(Array *array, int index);
+TNode *get(Array *array, int index);
 
 
 /*
     puts the node in that index in the array
     caution: if there is a node in that index already, free it manually first
 */
-void set(Array *array, int index, Node *node);
+void set(Array *array, int index, TNode *node);
 
 
 // adds node to start of the array
-void addFirst(Array *array, Node *node);
+void addFirst(Array *array, TNode *node);
 
 
 // adds the node to end of the arra
-void addLast(Array *array, Node *node);
+void addLast(Array *array, TNode *node);
 
 
 /*
@@ -42,7 +42,7 @@ void addLast(Array *array, Node *node);
     if index is not valid, does nothing
     accepts index from 0 to array size - 1
 */
-void add(Array *array, int index, Node *node);
+void add(Array *array, int index, TNode *node);
 
 
 /*

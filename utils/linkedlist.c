@@ -1,25 +1,13 @@
+#include "linkedlist.h"
 #include <stdio.h>
 #include <malloc.h>
-#include <string.h>
-
-typedef struct _node
-{
-    char *key;
-    int value;
-    struct _node *next;
-} Node;
-
-typedef struct _list
-{
-    Node *head;
-} List;
 
 
-Node *newNode(char *key, int value)
+Node *newNode(char character, int frequency)
 {
     Node *node = malloc(sizeof(Node));
-    node->key = key;
-    node->value = value;
+    node->character = character;
+    node->frequency = frequency;
     node->next = NULL;
 
     return node;
@@ -38,32 +26,55 @@ int isEmpty(List *list)
     return list->head == NULL;
 }
 
-void addNode(List *list, char *key, int value)
+void addNode(List *list, char character)
 {
-    Node *node = newNode(key, value);
-
     if (isEmpty(list))
-    {
-        list->head = node;
-    }
+        list->head = newNode(character, 1);
     else
     {
-        node->next = list->head;
-        list->head = node;
+        Node *currentNode = list->head;
+        while (currentNode != NULL)
+        {
+            if (currentNode->character == character)
+            {
+                currentNode->frequency++;
+                return;
+            }
+            currentNode = currentNode->next;
+        }
+        Node *new_node = newNode(character, 1);
+
+        new_node->next = list->head;
+        list->head = new_node;
     }
 }
 
-int deleteNode(List *list, char *key)
+int getFrequency(List *list, char character)
 {
     if (isEmpty(list))
+        return -1;
+
+    Node *currentNode = list->head;
+    while (currentNode != NULL)
     {
-        return 0;
+        if (currentNode->character == character)
+            return currentNode->frequency;
+        
+        currentNode = currentNode->next;
     }
 
-    Node *node = list->head;
+    return -1;
+}
+
+int deleteNode(List *list, char character)
+{
+    if (isEmpty(list))
+        return 0;
+
+    Node *currentNode = list->head;
 
     // if it is first item
-    if (list->head->key == key)
+    if (list->head->character == character)
     {
         Node *firstNode = list->head;
         list->head = firstNode->next;
@@ -72,16 +83,16 @@ int deleteNode(List *list, char *key)
     }
 
     // if it is not first item
-    while(node->next != NULL)
+    while(currentNode->next != NULL)
     {
-        if (strcmp(node->next->key, key) == 0)
+        if (currentNode->next->character == character)
         {
-            Node *deletedNode = node->next;
-            node->next = deletedNode->next;
+            Node *deletedNode = currentNode->next;
+            currentNode->next = deletedNode->next;
             free(deletedNode);
             return 1;            
         }
-        node = node->next;
+        currentNode = currentNode->next;
     }
 
     return 0;
@@ -112,13 +123,11 @@ void printList(List *list)
     {
         while (node->next != NULL)
         {
-            printf("(%s, %i), ", node->key, node->value);
+            printf("(%c, %i), ", node->character, node->frequency);
             node = node->next;
         }
-        printf("(%s, %i)]\n", node->key, node->value);
+        printf("(%c, %i)]\n", node->character, node->frequency);
     }
     else
-    {
         printf(" ]\n");
-    }
 }

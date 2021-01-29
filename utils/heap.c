@@ -67,7 +67,7 @@ TNode *deleteRoot(Heap *heap)
         return NULL;
 
     TNode *node = get(heap->array, 0);
-    TNode *copy = newNode(node->c, node->frequency);
+    TNode *copy = newTNode(node->c, node->frequency);
     copy->left = node->left;
     copy->right = node->right;
 

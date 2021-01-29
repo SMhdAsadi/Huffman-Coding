@@ -1,7 +1,7 @@
-#include "tree.h"
+#include "huffman_tree.h"
 #include <malloc.h>
 
-TNode *newNode(char c, int frequency)
+TNode *newTNode(char c, int frequency)
 {
     TNode *node = malloc(sizeof(TNode));
     node->c = c;

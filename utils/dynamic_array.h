@@ -1,6 +1,6 @@
 #ifndef DYNAMICARRAY_H
 #define DYNAMICARRAY_H
-#include "tree.h"
+#include "huffman_tree.h"
 
 
 /*

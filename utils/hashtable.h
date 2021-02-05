@@ -20,11 +20,18 @@ typedef struct _hashtable
 HashTable *newHashTable();
 
 
+// returns true if hash table contains character
+int contain(HashTable *hashTable, char character);
+
 /* 
     adds the character to the hash table
     if the character exists, adds one to the frequency
 */
-void addItem(HashTable *hashTable, char character);
+void addCharToIntItem(HashTable *hashTable, char character);
+
+
+// adds (character, string) pair to the hash table
+void addCharToStringItem(HashTable *hashTable, char character, char *string);
 
 
 // deletes the item with key = character
@@ -40,6 +47,10 @@ void deleteHashTable(HashTable *hashTable);
 
 
 // returns the value(frequency) of the character
-int getValue(HashTable *hashTable, char character);
+int getIntValue(HashTable *hashTable, char character);
+
+
+// returns the value(code) of the character
+char *getStringValue(HashTable *hashTable, char character);
 
 #endif

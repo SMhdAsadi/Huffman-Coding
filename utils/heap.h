@@ -20,6 +20,10 @@ typedef struct
 Heap *newHeap(HeapType type);
 
 
+// checks whether heap is empty
+int isHeapEmpty(Heap *heap);
+
+
 // inserts the node into the heap
 void insert(Heap *heap, TNode *node);
 

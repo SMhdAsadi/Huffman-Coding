@@ -1,13 +1,26 @@
 #include "linkedlist.h"
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
 
 
-Node *newNode(char character, int frequency)
+Node *newIntNode(char character, int frequency)
 {
     Node *node = malloc(sizeof(Node));
     node->character = character;
-    node->frequency = frequency;
+    node->value.frequency = frequency;
+    node->valueType = 0;
+    node->next = NULL;
+
+    return node;
+}
+
+Node *newStringNode(char character, char *code)
+{
+    Node *node = malloc(sizeof(Node));
+    node->character = character;
+    node->value.code = code;
+    node->valueType = 1;
     node->next = NULL;
 
     return node;
@@ -21,15 +34,15 @@ List *newList()
     return list;
 }
 
-int isEmpty(List *list)
+int isListEmpty(List *list)
 {
     return list->head == NULL;
 }
 
-void addNode(List *list, char character)
+void addIntNode(List *list, char character)
 {
-    if (isEmpty(list))
-        list->head = newNode(character, 1);
+    if (isListEmpty(list))
+        list->head = newIntNode(character, 1);
     else
     {
         Node *currentNode = list->head;
@@ -37,28 +50,40 @@ void addNode(List *list, char character)
         {
             if (currentNode->character == character)
             {
-                currentNode->frequency++;
+                currentNode->value.frequency++;
                 return;
             }
             currentNode = currentNode->next;
         }
-        Node *new_node = newNode(character, 1);
+        Node *new_node = newIntNode(character, 1);
 
         new_node->next = list->head;
         list->head = new_node;
     }
 }
 
+void addStringNode(List *list, char character, char *code)
+{
+    if (isListEmpty(list))
+        list->head = newStringNode(character, code);
+    else
+    {
+        Node *node = newStringNode(character, code);
+        node->next = list->head;
+        list->head = node;
+    }
+}
+
 int getFrequency(List *list, char character)
 {
-    if (isEmpty(list))
+    if (isListEmpty(list))
         return -1;
 
     Node *currentNode = list->head;
     while (currentNode != NULL)
     {
         if (currentNode->character == character)
-            return currentNode->frequency;
+            return currentNode->value.frequency;
         
         currentNode = currentNode->next;
     }
@@ -66,9 +91,26 @@ int getFrequency(List *list, char character)
     return -1;
 }
 
+char *getCode(List *list, char character)
+{
+    if (isListEmpty(list))
+        return NULL;
+    
+    Node *currentNode = list->head;
+    while (currentNode != NULL)
+    {
+        if (character == currentNode->character)
+            return currentNode->value.code;
+
+        currentNode = currentNode->next;
+    }
+
+    return NULL;
+}
+
 int deleteNode(List *list, char character)
 {
-    if (isEmpty(list))
+    if (isListEmpty(list))
         return 0;
 
     Node *currentNode = list->head;
@@ -78,6 +120,8 @@ int deleteNode(List *list, char character)
     {
         Node *firstNode = list->head;
         list->head = firstNode->next;
+        if (firstNode->valueType == 1)
+            free(&firstNode->value.code);
         free(firstNode);
         return 1;
     }
@@ -103,6 +147,9 @@ void deleteNodes(Node *node)
     if (node != NULL)
     {
         deleteNodes(node->next);
+        if (node->valueType == 1)
+            free(node->value.code);
+            
         free(node);
     }
 }
@@ -119,14 +166,20 @@ void printList(List *list)
 
     Node *node = list->head;
 
-    if (!isEmpty(list))
+    if (!isListEmpty(list))
     {
         while (node->next != NULL)
         {
-            printf("(%c, %i), ", node->character, node->frequency);
+            if (node->valueType == 0) // frequency
+                printf("(%c, %i), ", node->character, node->value.frequency);
+            else // code
+                printf("(%c, %s), ", node->character, node->value.code);
             node = node->next;
         }
-        printf("(%c, %i)]\n", node->character, node->frequency);
+        if (node->valueType == 0) // frequency
+            printf("(%c, %i)]\n", node->character, node->value.frequency);
+        else // code
+            printf("(%c, %s)]\n", node->character, node->value.code);
     }
     else
         printf(" ]\n");

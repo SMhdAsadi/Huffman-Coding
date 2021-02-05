@@ -12,6 +12,11 @@ Heap *newHeap(HeapType type)
     return heap;
 }
 
+int isHeapEmpty(Heap *heap)
+{
+    return len(heap->array) == 0;
+}
+
 void heapify(Heap *heap, int index)
 {
     int size = len(heap->array);
@@ -54,9 +59,7 @@ void insert(Heap *heap, TNode *node)
     addLast(heap->array, node);
 
     for (int i = len(heap->array); i >= 0; i--)
-    {
         heapify(heap, i);
-    }
 }
 
 TNode *deleteRoot(Heap *heap)

@@ -10,5 +10,8 @@ typedef struct _tnode
 
 TNode *newTNode(char c, int frequency);
 TNode *newEmptyNode();
+TNode *addHuffmanNode(TNode *a, TNode *b);
+void deleteHuffmanTree(TNode *root);
+void printHuffmanTree(TNode *root);
 
 #endif

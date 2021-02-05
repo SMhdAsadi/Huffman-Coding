@@ -21,10 +21,17 @@ HashTable *newHashTable()
     return hashTable;
 }
 
-void addItem(HashTable *hashTable, char character)
+void addCharToIntItem(HashTable *hashTable, char character)
 {
     int index = hashFunction(character);
-    addNode(hashTable->array[index], character);
+    addIntNode(hashTable->array[index], character);
+    hashTable->size++;
+}
+
+void addCharToStringItem(HashTable *hashTable, char character, char *string)
+{
+    int index = hashFunction(character);
+    addStringNode(hashTable->array[index], character, string);
     hashTable->size++;
 }
 
@@ -39,24 +46,44 @@ int deleteItem(HashTable *hashTabe, char character)
     return deletedSuccessfully;
 }
 
-int getValue(HashTable *hashTable, char character)
+int getIntValue(HashTable *hashTable, char character)
 {
     int index = hashFunction(character);
     
     List *list = hashTable->array[index];
-    if (isEmpty(list))
+    if (isListEmpty(list))
         return -1;
     
     Node *node = list->head;
     while (node != NULL)
     {
         if (node->character == character)
-            return node->frequency;
+            return node->value.frequency;
 
         node = node->next;
     }
 
     return -1;
+}
+
+char *getStringValue(HashTable *hashTable, char character)
+{
+    int index = hashFunction(character);
+
+    List *list = hashTable->array[index];
+    if (isListEmpty(list))
+        return NULL;
+
+    Node *node = list->head;
+    while (node != NULL)
+    {
+        if (node->character == character)
+            return node->value.code;
+
+        node = node->next;
+    }
+
+    return NULL;
 }
 
 void printHashTable(HashTable *hashTable)

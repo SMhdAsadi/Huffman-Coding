@@ -143,9 +143,12 @@ int delete(Array *array, int index)
 
 void deleteElements(Array *array)
 {
-    for (int i = 0; i < len(array); i++)
+    int size = len(array);
+    for (int i = 0; i < size; i++)
     {
-        free(get(array, i));
+        TNode *node = get(array, i);
+        if (node != 0)
+            free(node);
     }
 }
 

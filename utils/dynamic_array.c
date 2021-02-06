@@ -19,6 +19,7 @@ void doubleTheCapacity(Array *array)
 {
     int newCapacity = array->capacity * 2 * sizeof(array->elements[0]);
     array->elements = realloc(array->elements, newCapacity);
+    array->capacity = array->capacity * 2;
 }
 
 int len(Array *array)

@@ -6,6 +6,7 @@
 #include "utils/heap.h"
 #include "common.h"
 
+char *readText();
 void initializeFrequencyHashTable(HashTable *hashTable, char *string);
 void initializeHeap(Heap *heap, HashTable *hashTable);
 TNode *initializeHuffmanTree(TNode *tree, Heap *heap);
@@ -23,7 +24,12 @@ int main()
     TNode *huffmanTree = NULL;
     Array *codeLengthArray = newArray(10);
     HashTable *canonicalCodeHash = newHashTable();
-    char *string = "aaaaaaaaaabcccccccccccccccddddddd";
+    char *string = readText();
+    if (string == NULL)
+    {
+        printf("Cannot find text file.\n");
+        exit(EXIT_FAILURE);
+    }
 
     initializeFrequencyHashTable(frequencyHash, string);
     initializeHeap(heap, frequencyHash);
@@ -36,11 +42,10 @@ int main()
     initializeCodeLengthArray(codeLengthArray, codeHash);
     initializeCanonicalHash(canonicalCodeHash, codeLengthArray);
 
-    printHashTable(canonicalCodeHash);
     writeHeaderToFile(codeLengthArray);
     writeCodeToFile(string, canonicalCodeHash);
 
-
+    free(string);
     deleteHashTable(frequencyHash);
     deleteHeap(heap);
     deleteHuffmanTree(huffmanTree);
@@ -49,6 +54,29 @@ int main()
     deleteHashTable(canonicalCodeHash);
 
     return 0;
+}
+
+char *readText()
+{
+    FILE *file = fopen("a.txt", "r");
+    if (file == NULL)
+        return NULL;
+
+    int currentSize = 10, i = 0;
+    char *string = malloc(sizeof(char) * currentSize);
+    char c;
+    while ((c = getc(file)) != EOF)    
+    {
+        if (currentSize == i)
+        {
+            string = realloc(string, 2 * currentSize);
+            currentSize *= 2;
+        }
+        string[i] = c;
+        i++;
+    }
+
+    return string;
 }
 
 void initializeFrequencyHashTable(HashTable *hashTable, char *string)
@@ -68,7 +96,9 @@ void initializeHeap(Heap *heap, HashTable *hashTable)
 
         while (currentNode != NULL)
         {
-            insert(heap, newTNode(currentNode->character, currentNode->value.frequency));
+            TNode *newNode = newTNode(currentNode->character, currentNode->value.frequency);
+            insert(heap, newNode);
+
             currentNode = currentNode->next;
         }
     }
@@ -165,15 +195,66 @@ void writeHeaderToFile(Array *codeLength)
     fclose(file);
 }
 
-void writeCodeToFile(char *string, HashTable *canonicalHash)
+char *getBuffer(char *string, HashTable *canonicalHash)
 {
-    FILE *file = fopen("save.dat", "ab");
+    int outputCapacity = 50, outputSize = 0;
+    char *output = malloc(sizeof(char) * outputCapacity);
+    strcpy(output, "");
 
     for (int i = 0; *(string + i); i++)
     {
-        char *code = getStringValue(canonicalHash, *(string + 1));
-        fwrite(code, sizeof(char), strlen(code), file);
+        char *code = getStringValue(canonicalHash, *(string + i));
+        int codeSize = strlen(code);
+        while (outputCapacity <= outputSize + codeSize)
+        {
+            output = realloc(output, 2 * outputCapacity);
+            outputCapacity *= 2;
+        }
+        strcat(output, code);
+        outputSize += codeSize;
     }
 
+    return output;
+}
+
+unsigned char getCharCode(char *string)
+{
+    unsigned char output = 0;
+    int order = 1;
+    for (int i = 7; i >= 0; i--)
+    {
+        if (*(string + i) == '1')
+            output += order * 1;
+
+        order *= 2;
+    }
+
+    return output;
+}
+
+void writeCodeToFile(char *string, HashTable *canonicalHash)
+{
+    char *buffer = getBuffer(string, canonicalHash);
+    FILE *file = fopen("save.dat", "ab");
+    
+    int length = strlen(buffer);
+    int remainder = length % 8;
+    if (remainder != 0)
+    {
+        char extra = (char)(8 - remainder);
+        appendZeroToEnd(buffer, extra);
+        fwrite(&extra, sizeof(char), 1, file);
+    }
+
+    int i = 0;
+    char byte[9];
+    while (sscanf(buffer + (i * 8), "%8s", byte) == 1)
+    {
+        unsigned char code = getCharCode(byte);
+        fwrite(&code, sizeof(unsigned char), 1, file);
+        i++;
+    }
+
+    free(buffer);
     fclose(file);
 }

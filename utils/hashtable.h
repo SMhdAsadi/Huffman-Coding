@@ -6,7 +6,7 @@
 */
 
 #include "linkedlist.h"
-#define HASH_ARRAY_SIZE 15
+#define HASH_ARRAY_SIZE 25
 
 
 typedef struct _hashtable

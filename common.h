@@ -6,7 +6,6 @@
 #include "utils/huffman_tree.h"
 
 void initializeCanonicalHash(HashTable *canonical, Array *codeLengthArray);
-char *getCanonicalCode(TNode *node, int isFirstNode, char *lastCode, int lastCodeLength);
-char *decToBinary(int n);
+void appendZeroToEnd(char *string, int amount);
 
 #endif

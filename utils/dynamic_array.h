@@ -33,7 +33,7 @@ void set(Array *array, int index, TNode *node);
 void addFirst(Array *array, TNode *node);
 
 
-// adds the node to end of the arra
+// adds the node to end of the array
 void addLast(Array *array, TNode *node);
 
 

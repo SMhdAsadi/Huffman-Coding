@@ -1,8 +1,7 @@
 #include "common.h"
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 char *decToBinary(int n) 
 { 
@@ -25,24 +24,60 @@ char *decToBinary(int n)
     return output;
 }
 
+void increment(char *binaryString)
+{
+    int size = strlen(binaryString);
+    int overflow = 1;
+    for (int i = size - 1; i >= 0; i--)
+    {
+        char c = binaryString[i];
+        if (c == '0')
+        {
+            binaryString[i] = '1';
+            return;
+        }
+
+        if (c == '1')
+            binaryString[i] = '0';
+    }
+
+    binaryString = realloc(binaryString, sizeof(char) * (size + 2));
+    size++;
+
+    binaryString[0] = '1';
+    for (int i = 1; i < size; i++)
+        binaryString[i] = '0';
+    binaryString[size] = '\0';
+}
+
+void appendZeroToEnd(char *string, int amount)
+{
+    if (amount <= 0)
+        return;
+
+    int size = strlen(string);
+    string = realloc(string, size + amount + 1);
+    size += amount;
+
+    string[size] = '\0';
+    for (int i = size - 1; i >= size - amount; i--)
+        string[i] = '0';
+}
+
 char *getCanonicalCode(TNode *node, int isFirstNode, char *lastCode, int lastCodeLength)
 {
     char *canonical = NULL;
     if (isFirstNode)
     {
         canonical = malloc(sizeof(char) * (node->frequency + 1));
-        sprintf(canonical, "%*c", node->frequency, '0');
+        sprintf(canonical, "%0*i", node->frequency, 0);
     }
     else
     {
-        int canonicalIntCode = (int)strtol(lastCode, NULL, 2);
-        canonicalIntCode += 0b1;
-        canonicalIntCode <<= node->frequency - lastCodeLength;
-
-        char *binaryForm = decToBinary(canonicalIntCode);
-        canonical = malloc(sizeof(char) * (strlen(binaryForm) + 1));
-        sprintf(canonical, "%s", binaryForm);
-        free(binaryForm);
+        canonical = malloc(sizeof(lastCodeLength + 1));
+        strcpy(canonical, lastCode);
+        increment(canonical);
+        appendZeroToEnd(canonical, node->frequency - lastCodeLength);
     }
     return canonical;
 }

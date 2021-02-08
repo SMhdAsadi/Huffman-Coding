@@ -11,7 +11,7 @@
 
 typedef struct _hashtable
 {
-    List *array[HASH_ARRAY_SIZE];
+    List **array;
     int size;
 } HashTable;
 

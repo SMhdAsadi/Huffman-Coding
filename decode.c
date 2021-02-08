@@ -1,7 +1,3 @@
-// read header from file (code length)
-// read code from file (character code string)
-// create canonical tree from header (e.g. a -> 110)
-// parse character code string to characters
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
@@ -10,6 +6,8 @@
 #include "utils/dynamic_array.h"
 #include "utils/huffman_tree.h"
 #include "common.h"
+
+#define FILE_NAME "output.txt"
 
 long int readHeader(Array *codeLength);
 char *readCode(long int seekPtr, char *extra);
@@ -26,8 +24,6 @@ int main()
 
     HashTable *canonicalCode = newHashTable();
     initializeCanonicalHash(canonicalCode, codeLength);
-
-    printHashTable(canonicalCode);
 
     TNode *root = newEmptyNode();
     initializeCanonicalTree(root, canonicalCode);
@@ -92,8 +88,10 @@ char *readCode(long int seekPtr, char *extra)
     strcpy(code, "");
     unsigned char temp;
 
-    while (fread(&temp, sizeof(unsigned char), 1, file))
+    while (fread(&temp, sizeof(char), 1, file))
     {
+        if (feof(file))
+            break;
         if (i == currentSize)
         {
             code = realloc(code, 2 * currentSize);
@@ -157,6 +155,13 @@ void initializeCanonicalTree(TNode *root, HashTable *canonicalCode)
 void parseData(TNode *canonicalTree, char *string, char extra)
 {
     TNode *currentTNode = canonicalTree;
+    FILE *file = fopen(FILE_NAME, "w");
+    if (file == NULL)
+    {
+        printf("Cannot create file\n");
+        return;
+    }
+
     for (int i = 0; *(string + i + extra); i++)
     {
         if (*(string + i) == '1')
@@ -166,10 +171,10 @@ void parseData(TNode *canonicalTree, char *string, char extra)
 
         if (currentTNode->left == NULL && currentTNode->right == NULL)
         {
-            printf("%c", currentTNode->c);
+            fprintf(file, "%c", currentTNode->c);
             currentTNode = canonicalTree;
         }
     }
 
-    printf("\n");
+    fclose(file);
 }

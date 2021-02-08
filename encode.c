@@ -6,6 +6,8 @@
 #include "utils/heap.h"
 #include "common.h"
 
+#define FILE_NAME "test.txt"
+
 char *readText();
 void initializeFrequencyHashTable(HashTable *hashTable, char *string);
 void initializeHeap(Heap *heap, HashTable *hashTable);
@@ -58,25 +60,49 @@ int main()
 
 char *readText()
 {
-    FILE *file = fopen("a.txt", "r");
-    if (file == NULL)
-        return NULL;
+    char *buffer = 0;
+    long length;
+    FILE *file = fopen(FILE_NAME, "rb");
 
-    int currentSize = 10, i = 0;
-    char *string = malloc(sizeof(char) * currentSize);
-    char c;
-    while ((c = getc(file)) != EOF)    
+    if (file)
     {
-        if (currentSize == i)
-        {
-            string = realloc(string, 2 * currentSize);
-            currentSize *= 2;
-        }
-        string[i] = c;
-        i++;
+        fseek(file, 0, SEEK_END);
+        length = ftell (file);
+        fseek(file, 0, SEEK_SET);
+        buffer = malloc(length + 1);
+        if (buffer)
+            fread(buffer, 1, length, file);
+
+        buffer[length] = '\0';
+        fclose(file);
     }
 
-    return string;
+    if (buffer)
+        return buffer;
+    else
+        return NULL;
+
+    // FILE *file = fopen("a.txt", "r");
+    // if (file == NULL)
+    //     return NULL;
+
+    // int currentSize = 10, i = 0;
+    // char *string = malloc(sizeof(char) * currentSize), c = ' ';
+    // while ((c = getc(file)) != EOF)    
+    // {
+    //     if (currentSize == i)
+    //     {
+    //         string = realloc(string, 2 * currentSize);
+    //         currentSize *= 2;
+    //     }
+    //     string[i] = c;
+    //     i++;
+    // }
+
+    // if (i != currentSize)
+    //     string = realloc(string, i * sizeof(char));
+
+    // return string;
 }
 
 void initializeFrequencyHashTable(HashTable *hashTable, char *string)
@@ -210,7 +236,7 @@ char *getBuffer(char *string, HashTable *canonicalHash)
             output = realloc(output, 2 * outputCapacity);
             outputCapacity *= 2;
         }
-        strcat(output, code);
+        strcat(output + outputSize, code);
         outputSize += codeSize;
     }
 
@@ -224,7 +250,7 @@ unsigned char getCharCode(char *string)
     for (int i = 7; i >= 0; i--)
     {
         if (*(string + i) == '1')
-            output += order * 1;
+            output += order;
 
         order *= 2;
     }
@@ -248,12 +274,19 @@ void writeCodeToFile(char *string, HashTable *canonicalHash)
 
     int i = 0;
     char byte[9];
-    while (sscanf(buffer + (i * 8), "%8s", byte) == 1)
+    for (int i = 0; i < length + (8 - remainder); i += 8)
     {
+        strncpy(byte, buffer + i, 8);
         unsigned char code = getCharCode(byte);
         fwrite(&code, sizeof(unsigned char), 1, file);
-        i++;
     }
+    // while (sscanf(buffer + (i * 8), "%.8s", byte) == 1)
+    // {
+    //     printf("here we go byte is %s\n", byte);
+    //     unsigned char code = getCharCode(byte);
+    //     fwrite(&code, sizeof(unsigned char), 1, file);
+    //     i++;
+    // }
 
     free(buffer);
     fclose(file);

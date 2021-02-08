@@ -13,6 +13,8 @@ int hashFunction(char key)
 HashTable *newHashTable()
 {
     HashTable *hashTable = malloc(sizeof(HashTable));
+
+    hashTable->array = calloc(HASH_ARRAY_SIZE, sizeof(hashTable->array[0]));
     for (int i = 0; i < HASH_ARRAY_SIZE; i++)
         hashTable->array[i] = newList();
     
@@ -101,5 +103,6 @@ void deleteHashTable(HashTable *hashTable)
     for (int i = 0; i < HASH_ARRAY_SIZE; i++)
         deleteList(hashTable->array[i]);
 
+    free(hashTable->array);
     free(hashTable);
 }

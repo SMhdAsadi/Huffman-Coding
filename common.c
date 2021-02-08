@@ -27,7 +27,6 @@ char *decToBinary(int n)
 void increment(char *binaryString)
 {
     int size = strlen(binaryString);
-    int overflow = 1;
     for (int i = size - 1; i >= 0; i--)
     {
         char c = binaryString[i];
@@ -74,7 +73,7 @@ char *getCanonicalCode(TNode *node, int isFirstNode, char *lastCode, int lastCod
     }
     else
     {
-        canonical = malloc(sizeof(lastCodeLength + 1));
+        canonical = malloc(lastCodeLength + 1);
         strcpy(canonical, lastCode);
         increment(canonical);
         appendZeroToEnd(canonical, node->frequency - lastCodeLength);
